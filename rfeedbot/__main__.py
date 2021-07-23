@@ -39,8 +39,6 @@ async def update_feed():
                         await client.send_message(feed_channel_id, f"https://reddit.com{submission.permalink}")
                     else:
                         break
-                else:
-                    break
 
             if curr_latest != new_latest:
                 config.set("DEFAULT", f"{subreddit}_latest", new_latest)
