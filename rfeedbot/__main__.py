@@ -31,14 +31,17 @@ async def update_feed():
             curr_latest = config.get("DEFAULT", f"{subreddit}_latest", fallback=None)
             new_latest = None
 
-            async for submission in (await praw.subreddit(subreddit)).new():
-                if submission and submission.id:
-                    new_latest = new_latest or submission.id
+            try:
+                async for submission in (await praw.subreddit(subreddit)).new():
+                    if submission and submission.id:
+                        new_latest = new_latest or submission.id
 
-                    if curr_latest != submission.id and curr_latest is not None:
-                        await client.send_message(feed_channel_id, f"https://reddit.com{submission.permalink}")
-                    else:
-                        break
+                        if curr_latest != submission.id and curr_latest is not None:
+                            await client.send_message(feed_channel_id, f"https://reddit.com{submission.permalink}")
+                        else:
+                            break
+            except:
+                continue
 
             if curr_latest != new_latest:
                 config.set("DEFAULT", f"{subreddit}_latest", new_latest)
